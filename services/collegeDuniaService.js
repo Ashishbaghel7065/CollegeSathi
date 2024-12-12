@@ -18,19 +18,46 @@ export const getAllCards = async (req, res) => {
 
 export const updateAllCards = async (req, res) => {
   try {
-    const cards = await University.updateMany();
+    const { id } = req.params; // Correctly access the route parameter
+    const { fees } = req.body;
+
+    // Check if 'id' and 'fees' are provided
+    if (!id || !fees) {
+      return res.status(400).json({
+        success: false,
+        message: "'id' parameter and 'fees' field are required.",
+      });
+    }
+
+    // Update the document and return the updated version
+    const updatedCard = await University.findOneAndUpdate(
+      { _id: id },
+      { fees: fees },
+      { new: true } // Ensures the returned document is the updated one
+    );
+
+    // Check if the document was found and updated
+    if (!updatedCard) {
+      return res.status(404).json({
+        success: false,
+        message: "University not found.",
+      });
+    }
+
     res.status(200).json({
       success: true,
-      data: cards,
+      data: updatedCard,
     });
   } catch (error) {
+    console.error("Error updating university:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch cards",
+      message: "Failed to update university.",
       error: error.message,
     });
   }
 };
+
 export async function handlerCreateNewUser(req, res) {
   try {
     console.log(req.body);
@@ -49,7 +76,9 @@ export async function handlerCreateNewUser(req, res) {
     ) {
       return res
         .status(400)
-        .json({ msg: "All fields (title, location, rank, fees, courses, facilities, alumni) are required." });
+        .json({
+          msg: "All fields (title, location, rank, fees, courses, facilities, alumni) are required.",
+        });
     }
 
     // Create a new document in the database

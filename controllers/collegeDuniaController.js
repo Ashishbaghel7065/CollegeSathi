@@ -2,11 +2,11 @@ import {  getAllCards, handlerCreateNewUser, updateAllCards } from "../services/
 
 
 const getAllDataController=(req,res)=>{
-    getAllCards();
+    getAllCards(req,res);
 }
 
 const updateAllDataController=(req,res)=>{
-    updateAllCards();
+    updateAllCards(req,res);
 }
 
 const createAllController=(req,res)=>{

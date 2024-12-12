@@ -4,17 +4,15 @@ import {
   getAllDataController,
   updateAllDataController,
 } from "../controllers/collegeDuniaController.js";
-import { handlerCreateNewUser } from "../services/collegeDuniaService.js";
 
 const router = express.Router();
 
-// Create a new university
-router.post("/university/create", handlerCreateNewUser);
 
-// // Update an existing university by ID
-// router.put("/university/", updateAllDataController);
+router.post("/university/create", createAllController);
 
-// // Get all universities
-// router.get("/university", getAllDataController);
+router.patch("/university/update/:id", updateAllDataController);
+
+
+router.get("/university/getdata", getAllDataController);
 
 export default router;
