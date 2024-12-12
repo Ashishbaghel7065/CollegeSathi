@@ -1,16 +1,16 @@
 import {  getAllCards, handlerCreateNewUser, updateAllCards } from "../services/collegeDuniaService.js";
 
 
-const getAllDataController=()=>{
+const getAllDataController=(req,res)=>{
     getAllCards();
 }
 
-const updateAllDataController=()=>{
+const updateAllDataController=(req,res)=>{
     updateAllCards();
 }
 
-const createAllController=()=>{
-    handlerCreateNewUser()
+const createAllController=(req,res)=>{
+    handlerCreateNewUser(req,res)
 }
 
 export {getAllDataController,updateAllDataController,createAllController}

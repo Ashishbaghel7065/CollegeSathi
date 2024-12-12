@@ -32,31 +32,49 @@ export const updateAllCards = async (req, res) => {
   }
 };
 export async function handlerCreateNewUser(req, res) {
-  const body = req.body;
-  if (
-    !body ||
-    !body.title ||
-    !body.location ||
-    !body.rank ||
-    !body.fees ||
-    !body.courses ||
-    !body.facilities ||
-    !body.alumni
-  ) {
-    return res
-      .status(400)
-      .json({ msg: "Some of your  fields doesnot not exist" });
+  try {
+    console.log(req.body);
+    const body = req.body;
+
+    // Validate required fields
+    if (
+      !body ||
+      !body.title ||
+      !body.location ||
+      !body.rank ||
+      !body.fees ||
+      !body.courses ||
+      !body.facilities ||
+      !body.alumni
+    ) {
+      return res
+        .status(400)
+        .json({ msg: "All fields (title, location, rank, fees, courses, facilities, alumni) are required." });
+    }
+
+    // Create a new document in the database
+    const collegeResult = await University.create({
+      title: body.title,
+      location: body.location,
+      rank: body.rank,
+      fees: body.fees,
+      courses: body.courses,
+      facilities: body.facilities,
+      alumni: body.alumni, // Corrected typo
+    });
+
+    // Send success response
+    return res.status(201).json({
+      msg: "Document created successfully",
+      data: collegeResult,
+    });
+  } catch (error) {
+    console.error("Error creating document:", error);
+
+    // Send error response
+    return res.status(500).json({
+      msg: "An error occurred while creating the document",
+      error: error.message,
+    });
   }
-
-  const collegeResult = await University.create({
-    title: res.body.title,
-    location: body.location,
-    rank: body.rank,
-    fees: body.fees,
-    courses: body.courses,
-    facilities: body.facilities,
-    alumini: body.alumni,
-  });
-
-  res.status(201).json({ msg: "document created" + collegeResult });
 }
