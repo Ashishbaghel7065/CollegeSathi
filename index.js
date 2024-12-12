@@ -1,17 +1,28 @@
-import express from "express"
-import dotenv from "dotenv"
-dotenv.config()
-const app =express()
-const PORT= process.env.PORT || 9000
+import express from "express";
+import dotenv from "dotenv";
+import ConnectDB from "./config/db.js";
+import cors from "cors";
+dotenv.config();
+const app = express();
+const PORT = process.env.PORT || 9000;
+const corsOptions = {
+  origin: ["http://localhost:3000","http://localhost:5173"],
+  methods: ["GET", "POST", "PUT", "DELETE"], 
+  allowedHeaders: ["Content-Type", "Authorization"], 
+  credentials: true, 
+};
 
+app.use(cors(corsOptions));
+app.use(express.json());
 
-
-app.get("/" ,(req, res)=>{
+app.get("/", (req, res) => {
   res.send({
-    message:`Server is running on ${PORT}`
-  })
-})
+    message: `Server is running on ${PORT}`,
+  });
+});
 
-app.listen(PORT ,()=>{
-    console.log(`Server is Running on port : ${PORT}`)
-})
+ConnectDB();
+
+app.listen(PORT, () => {
+  console.log(`Server is Running on port : ${PORT}`);
+});
