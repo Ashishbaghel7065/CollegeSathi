@@ -15,8 +15,13 @@ const universitySchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    image:{
+      type:String,
+      required:true,
+      default:""
+    },
     fees: {
-      type: String,
+      type: Number,
       required: true,
     },
     courses: {

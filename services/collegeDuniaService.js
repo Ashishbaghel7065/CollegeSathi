@@ -1,5 +1,6 @@
 import University from "../model/universitymodel.js";
 
+//getAllUniversity service
 export const getAllCards = async (req, res) => {
   try {
     const cards = await University.find();
@@ -16,27 +17,31 @@ export const getAllCards = async (req, res) => {
   }
 };
 
+//update service
 export const updateAllCards = async (req, res) => {
   try {
-    const { id } = req.params; // Correctly access the route parameter
-    const { fees } = req.body;
-
-    // Check if 'id' and 'fees' are provided
-    if (!id || !fees) {
+    const { id } = req.params;
+    const { fees,title,location,rank,courses,facilities,alumni,image } = req.body;
+    if (!id || !fees|| !title || !rank || !courses || !facilities || !alumni || !image ||!location) {
       return res.status(400).json({
         success: false,
         message: "'id' parameter and 'fees' field are required.",
       });
     }
-
-    // Update the document and return the updated version
     const updatedCard = await University.findOneAndUpdate(
       { _id: id },
-      { fees: fees },
-      { new: true } // Ensures the returned document is the updated one
+      { 
+        fees: fees, 
+        title: title, 
+        location: location, 
+        courses: courses, 
+        rank: rank, 
+        alumni: alumni, 
+        facilities: facilities 
+      },
+      { new: true },
     );
 
-    // Check if the document was found and updated
     if (!updatedCard) {
       return res.status(404).json({
         success: false,
@@ -57,13 +62,16 @@ export const updateAllCards = async (req, res) => {
     });
   }
 };
-
-export async function handlerCreateNewUser(req, res) {
+//create service
+export async function handlerCreateNewUniversity(req, res) {
   try {
+    const titleCheck=University.findOne({ title: req.body.title }) !== null;
+    if(titleCheck){
+     return res.status(400).json({ms:"title already exists"})
+    }
     console.log(req.body);
     const body = req.body;
 
-    // Validate required fields
     if (
       !body ||
       !body.title ||
@@ -80,8 +88,6 @@ export async function handlerCreateNewUser(req, res) {
           msg: "All fields (title, location, rank, fees, courses, facilities, alumni) are required.",
         });
     }
-
-    // Create a new document in the database
     const collegeResult = await University.create({
       title: body.title,
       location: body.location,
@@ -89,10 +95,10 @@ export async function handlerCreateNewUser(req, res) {
       fees: body.fees,
       courses: body.courses,
       facilities: body.facilities,
-      alumni: body.alumni, // Corrected typo
+      alumni: body.alumni,
     });
 
-    // Send success response
+
     return res.status(201).json({
       msg: "Document created successfully",
       data: collegeResult,
@@ -100,10 +106,16 @@ export async function handlerCreateNewUser(req, res) {
   } catch (error) {
     console.error("Error creating document:", error);
 
-    // Send error response
+
     return res.status(500).json({
       msg: "An error occurred while creating the document",
       error: error.message,
     });
   }
+}
+
+//delete service
+export const deleteDoc=async(req,res)=>{
+     const deletedDoc= await University.deleteOne({ _id: req.params.id });
+     return res.status(200).json({msg:"deleteted successFully"+deletedDoc})
 }

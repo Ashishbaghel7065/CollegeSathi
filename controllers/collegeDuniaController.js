@@ -1,4 +1,4 @@
-import {  getAllCards, handlerCreateNewUser, updateAllCards } from "../services/collegeDuniaService.js";
+import {  getAllCards, handlerCreateNewUniversity, updateAllCards,deleteDoc } from "../services/collegeDuniaService.js";
 
 
 const getAllDataController=(req,res)=>{
@@ -9,8 +9,12 @@ const updateAllDataController=(req,res)=>{
     updateAllCards(req,res);
 }
 
-const createAllController=(req,res)=>{
-    handlerCreateNewUser(req,res)
+const createAllUniversityController=(req,res)=>{
+    handlerCreateNewUniversity(req,res)
 }
 
-export {getAllDataController,updateAllDataController,createAllController}
+const deleteDocumentController=(req,res)=>{
+    deleteDoc(req,res);
+}
+
+export {getAllDataController,updateAllDataController,createAllUniversityController,deleteDocumentController}
