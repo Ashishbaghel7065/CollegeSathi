@@ -31,6 +31,7 @@ export const updateAllCards = async (req, res) => {
     const updatedCard = await University.findOneAndUpdate(
       { _id: id },
       { 
+        image:image,
         fees: fees, 
         title: title, 
         location: location, 
@@ -62,11 +63,12 @@ export const updateAllCards = async (req, res) => {
     });
   }
 };
+
 //create service
 export async function handlerCreateNewUniversity(req, res) {
   try {
     const titleCheck=University.findOne({ title: req.body.title }) !== null;
-    if(titleCheck){
+    if(!titleCheck){
      return res.status(400).json({ms:"title already exists"})
     }
     console.log(req.body);
@@ -80,7 +82,8 @@ export async function handlerCreateNewUniversity(req, res) {
       !body.fees ||
       !body.courses ||
       !body.facilities ||
-      !body.alumni
+      !body.alumni  ||
+      !body.image
     ) {
       return res
         .status(400)
@@ -96,6 +99,7 @@ export async function handlerCreateNewUniversity(req, res) {
       courses: body.courses,
       facilities: body.facilities,
       alumni: body.alumni,
+      image:body.image,
     });
 
 
