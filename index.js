@@ -18,7 +18,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/api", universityRouter);
-app.use("/user",userRouter);
+app.use("/api",userRouter);
 
 
 app.get("/", (req, res) => {
