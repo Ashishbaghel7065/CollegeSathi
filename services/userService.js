@@ -48,4 +48,52 @@ export const createUser = async (req, res) => {
 };
 
 
+export const updateUser=async(req,res)=>{
+  try {
+    const { id } = req.params;
+    const { fullName,phoneNumber,gender,email,password,dateofBirth,role} = req.body;
+    if (!fullName || !phoneNumber|| !gender || !email || !password || !dateofBirth || !role) {
+      return res.status(400).json({
+        success: false,
+        message: "'id' parameter and  field are required.",
+      });
+    }
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id },
+      { 
+        fullName:fullName,
+        phoneNumber: phoneNumber, 
+        gender: gender, 
+        email: email, 
+        password: password, 
+        dateofBirth: dateofBirth, 
+        role: role 
+      },
+      { new: true },
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update user.",
+      error: error.message,
+    });
+  }
+}
+export const updateAllCards = async (req, res) => {
+  
+};
+
 // export const updateUser = async (req, res) => {};
