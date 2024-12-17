@@ -1,6 +1,7 @@
 import User from "../model/userModel.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import sendEmail from "../mail/mail.js";
 export const createUser = async (req, res) => {
   try {
     const emailCheck = User.findOne({ email: req.body.email }) !== null;
@@ -141,5 +142,42 @@ export const userLogin = async (req, res) => {
     
     console.error("Error during login:", error);
     return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};
+
+
+// Define the forgetPassword function
+export const forgetPassword = async (req,res) => {
+  try {
+ 
+    const userEmail = req?.user?.userEmail;
+
+    if (!userEmail) {
+      throw new Error('User email is required.');
+    }
+
+    // Email content
+    const subject = 'Forget Password';
+    const htmlContent = '<p>Verify Password</p>';
+    const textContent = 'Verify Password';
+
+    // Call the sendEmail function
+    const data = await sendEmail({
+      sendTo: userEmail,
+      subject: subject,
+      html: htmlContent,
+      text: textContent,
+    });
+
+    console.log(data)
+  console.log("working");
+  
+    console.log('Password reset email sent successfully.');
+
+    return res.status(201).json({
+      msg:"Password reset email sent successfully."
+    })
+  } catch (error) {
+    console.error('Error sending password reset email:', error.message);
   }
 };
