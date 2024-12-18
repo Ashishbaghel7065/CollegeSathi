@@ -2,6 +2,7 @@ import User from "../model/userModel.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import sendEmail from "../mail/mail.js";
+import { emailTemplate } from "../config/emailTemplate.js";
 
              //createUserDocService here
 export const createUser = async (req, res) => {
@@ -150,40 +151,55 @@ export const userLogin = async (req, res) => {
 
 
              // Define the forgetPassword function
-export const forgetPassword = async (req,res) => {
-  try {
- 
-    const userEmail = req?.user?.userEmail;
 
-    if (!userEmail) {
-      throw new Error('User email is required.');
+// Define the forgetPassword function
+export const forgetPassword = async (req, res) => {
+  try {
+    const { email } = req?.body;
+
+    if (!email) {
+      return res.status(400).json({
+        msg: "Email is required",
+      });
     }
 
+    // Find the user by email
+    const userEmail = await User.findOne({ email });
+
+    if (!userEmail) {
+      return res.status(404).json({
+        msg: "User with this email does not exist",
+        
+      });
+    }
+   const link = "http://localhost:5173/forget-password"
     // Email content
-    const subject = 'Forget Password';
-    const htmlContent = '<p>Verify Password</p>';
-    const textContent = 'Verify Password';
+    const subject = "Forget Password";
+    const htmlContent = emailTemplate(userEmail.fullName,link,userEmail._id);
+    const textContent = "Click the link below to reset your password";
 
     // Call the sendEmail function
     const data = await sendEmail({
-      sendTo: userEmail,
-      subject: subject,
+      sendTo: email,
+      subject,
       html: htmlContent,
       text: textContent,
     });
 
-    console.log(data)
-  console.log("working");
-  
-    console.log('Password reset email sent successfully.');
+   
 
-    return res.status(201).json({
-      msg:"Password reset email sent successfully."
-    })
+    console.log("Password reset email sent successfully.");
+    return res.status(200).json({
+      msg: "Password reset email sent successfully.",
+    });
   } catch (error) {
-    console.error('Error sending password reset email:', error.message);
+    console.error("Error sending password reset email:", error.message);
+    return res.status(500).json({
+      msg: "Internal server error. Please try again later.",
+    });
   }
 };
+
 
 
               //updatePasswordservice here
@@ -222,3 +238,6 @@ export const updatePasswordService=async(req,res)=>{
     res.status(500).json({ msg: "An error occurred while updating the password." });
   }
 }
+
+
+

@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/resgiter',createUserController);
 router.post("/login", UserloginCotroller)
 router.patch('/updateuser/:id',Auth, updateUserController);
-router.patch('/updatePassword/:id',updatePasswordController);
+
 router.get('/dashborad',Auth,adminAuth, (req, res)=>{
     res.send({
         msg:"Admin Routes Accesable",
@@ -18,4 +18,7 @@ router.get('/dashborad',Auth,adminAuth, (req, res)=>{
     })
 });
 router.get('/forget-password',Auth,forgetPasswordController);
+router.patch('/updatePassword/:id',updatePasswordController);
 export default router;
+
+
