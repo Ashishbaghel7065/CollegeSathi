@@ -2,6 +2,8 @@ import User from "../model/userModel.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import sendEmail from "../mail/mail.js";
+
+             //createUserDocService here
 export const createUser = async (req, res) => {
   try {
     const emailCheck = User.findOne({ email: req.body.email }) !== null;
@@ -52,6 +54,7 @@ export const createUser = async (req, res) => {
   }
 };
 
+            //updateFieldservice here
 export const updateUserService = async (req, res) => {
   try {
     const { id } = req.params;
@@ -98,7 +101,7 @@ export const updateUserService = async (req, res) => {
   }
 };
 
-// export const updateUser = async (req, res) => {};
+
 // Userlogin 
 export const userLogin = async (req, res) => {
   try {
@@ -146,7 +149,7 @@ export const userLogin = async (req, res) => {
 };
 
 
-// Define the forgetPassword function
+             // Define the forgetPassword function
 export const forgetPassword = async (req,res) => {
   try {
  
@@ -181,3 +184,41 @@ export const forgetPassword = async (req,res) => {
     console.error('Error sending password reset email:', error.message);
   }
 };
+
+
+              //updatePasswordservice here
+export const updatePasswordService=async(req,res)=>{
+  const { id } = req.params;
+  const { confirmPass, updatedPass } = req.body;
+  if (!confirmPass || !updatedPass) {
+    return res.status(400).json({ msg: "Both password fields are required." });
+  }
+  if (confirmPass !== updatedPass) {
+    return res.status(400).json({ msg: "Passwords do not match." });
+  }
+
+  try {
+
+    const newHashedPassword = await bcryptjs.hash(confirmPass, 10);
+
+
+    const updateResult = await User.updateOne(
+      { _id: id },
+      { $set: { password: newHashedPassword } }
+    );
+
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({ success: false, msg: "User not found." });
+    }
+
+    res.status(200).json({
+      success: true,
+      msg: "Password updated successfully.",
+      data: updateResult,
+    });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ msg: "An error occurred while updating the password." });
+  }
+}
