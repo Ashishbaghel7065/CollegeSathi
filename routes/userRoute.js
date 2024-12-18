@@ -23,7 +23,7 @@ router.get("/dashborad", Auth, adminAuth, (req, res) => {
     error: false,
   });
 });
-router.get("/forget-password", Auth, forgetPasswordController);
+router.get("/forget-password", forgetPasswordController);
 router.patch("/updatePassword/:id", updatePasswordController);
 router.get("/getusers", Auth, adminAuth, getAllUserController);
 export default router;
