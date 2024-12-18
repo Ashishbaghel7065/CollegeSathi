@@ -1,4 +1,4 @@
-import { createUser, forgetPassword, updatePasswordService, updateUserService, userLogin } from "../services/userService.js";
+import { createUser, forgetPassword, getAllUsers, updatePasswordService, updateUserService, userLogin } from "../services/userService.js";
 
 
          //this controller create new user doc
@@ -28,3 +28,7 @@ export const updatePasswordController=(req,res)=>{
   updatePasswordService(req,res);
 }
   
+
+export const getAllUserController=(req,res)=>{
+  getAllUsers(req,res);
+}
