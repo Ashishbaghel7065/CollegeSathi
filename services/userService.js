@@ -4,12 +4,16 @@ import jwt from "jsonwebtoken";
 import sendEmail from "../mail/mail.js";
 import { emailTemplate } from "../config/emailTemplate.js";
 
-             //createUserDocService here
+//createUserDocService here
 export const createUser = async (req, res) => {
   try {
     const emailCheck = User.findOne({ email: req.body.email }) !== null;
     if (!emailCheck) {
-      return res.status(400).json({ ms: "user already exists" });
+      return res.status(400).json({
+        message: "user already exists",
+        success: false,
+        error: true,
+      });
     }
     console.log(req.body);
     const body = req.body;
@@ -25,7 +29,9 @@ export const createUser = async (req, res) => {
       !body.gender
     ) {
       return res.status(400).json({
-        msg: "some of the fields are still empty",
+        message: "some of the fields are still empty",
+        success: false,
+        error: true,
       });
     }
 
@@ -42,25 +48,43 @@ export const createUser = async (req, res) => {
     });
 
     return res.status(201).json({
-      msg: "Document created successfully",
+      message: "Document created successfully",
+      success: true,
+      error: false,
       data: userResult,
     });
   } catch (error) {
     console.error("Error creating document:", error);
 
     return res.status(500).json({
-      msg: "An error occurred while creating the document",
+      message: "An error occurred while creating the document",
       error: error.message,
     });
   }
 };
 
-            //updateFieldservice here
+//updateFieldservice here
 export const updateUserService = async (req, res) => {
   try {
     const { id } = req.params;
-    const { fullName,phoneNumber,gender,email,password,dateofBirth,role } = req.body;
-    if (!fullName || !phoneNumber|| !gender || !email || !password || !dateofBirth || !role ) {
+    const {
+      fullName,
+      phoneNumber,
+      gender,
+      email,
+      password,
+      dateofBirth,
+      role,
+    } = req.body;
+    if (
+      !fullName ||
+      !phoneNumber ||
+      !gender ||
+      !email ||
+      !password ||
+      !dateofBirth ||
+      !role
+    ) {
       return res.status(400).json({
         success: false,
         message: "'id' parameter and 'fees' field are required.",
@@ -68,17 +92,16 @@ export const updateUserService = async (req, res) => {
     }
     const updatedUser = await User.findOneAndUpdate(
       { _id: id },
-      { 
-        fullName:fullName,
-        phoneNumber: phoneNumber, 
-        gender: gender, 
-        email: email, 
-        password: password, 
-        dateofBirth: dateofBirth, 
-        role: role, 
-        
+      {
+        fullName: fullName,
+        phoneNumber: phoneNumber,
+        gender: gender,
+        email: email,
+        password: password,
+        dateofBirth: dateofBirth,
+        role: role,
       },
-      { new: true },
+      { new: true }
     );
 
     if (!updatedUser) {
@@ -89,6 +112,7 @@ export const updateUserService = async (req, res) => {
     }
 
     res.status(200).json({
+      message: "User Update Succefully",
       success: true,
       data: updatedUser,
     });
@@ -102,55 +126,66 @@ export const updateUserService = async (req, res) => {
   }
 };
 
-
-// Userlogin 
+// Userlogin
 export const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    
     if (!email || !password) {
-      return res.status(400).json({ msg: "Email or Password is Missing" });
+      return res.status(400).json({
+        message: "Email or Password is Missing",
+        success: false,
+        error: true,
+      });
     }
 
     const existUser = await User.findOne({ email });
 
     if (!existUser) {
-      return res.status(404).json({ msg: "User is not found. Please Signup." });
+      return res.status(404).json({
+        message: "User is not found. Please Signup.",
+        success: false,
+        error: true,
+      });
     }
 
-   
-    const comparePassword = await bcryptjs.compare(password, existUser.password);
+    const comparePassword = await bcryptjs.compare(
+      password,
+      existUser.password
+    );
 
     if (!comparePassword) {
-      return res.status(401).json({ msg: "Password is incorrect" });
+      return res.status(401).json({
+        message: "Password is incorrect",
+        success: false,
+        error: true,
+      });
     }
 
-   
     const payload = {
       userId: existUser._id,
       userEmail: existUser.email,
     };
 
-  
     const token = jwt.sign(payload, process.env.SECRET_KEY, {
       expiresIn: "24h",
     });
 
-  
     return res.status(200).json({
-      msg: "User Login Successful",
+      message: "User Login Successful",
+      success: true,
+      error: false,
       token: token,
     });
   } catch (error) {
-    
     console.error("Error during login:", error);
-    return res.status(500).json({ msg: "Internal Server Error" });
+    return res.status(500).json({
+      message: "Internal Server Error",
+      success: false,
+      error: true,
+    });
   }
 };
-
-
-             // Define the forgetPassword function
 
 // Define the forgetPassword function
 export const forgetPassword = async (req, res) => {
@@ -159,7 +194,9 @@ export const forgetPassword = async (req, res) => {
 
     if (!email) {
       return res.status(400).json({
-        msg: "Email is required",
+        message: "Email is required",
+        success: false,
+        error: true,
       });
     }
 
@@ -168,14 +205,15 @@ export const forgetPassword = async (req, res) => {
 
     if (!userEmail) {
       return res.status(404).json({
-        msg: "User with this email does not exist",
-        
+        message: "User with this email does not exist",
+        success: false,
+        error: true,
       });
     }
-   const link = "http://localhost:5173/forget-password"
+    const link = "http://localhost:5173/forget-password";
     // Email content
     const subject = "Forget Password";
-    const htmlContent = emailTemplate(userEmail.fullName,link,userEmail._id);
+    const htmlContent = emailTemplate(userEmail.fullName, link, userEmail._id);
     const textContent = "Click the link below to reset your password";
 
     // Call the sendEmail function
@@ -186,63 +224,74 @@ export const forgetPassword = async (req, res) => {
       text: textContent,
     });
 
-   
-
     console.log("Password reset email sent successfully.");
     return res.status(200).json({
-      msg: "Password reset email sent successfully.",
+      message: "Password reset email sent successfully.",
+      success: true,
+      error: false,
     });
   } catch (error) {
     console.error("Error sending password reset email:", error.message);
     return res.status(500).json({
-      msg: "Internal server error. Please try again later.",
+      message: "Internal server error. Please try again later.",
+      success: false,
+      error: true,
     });
   }
 };
 
-
-
-              //updatePasswordservice here
-export const updatePasswordService=async(req,res)=>{
+//updatePasswordservice here
+export const updatePasswordService = async (req, res) => {
   const { id } = req.params;
   const { confirmPass, updatedPass } = req.body;
   if (!confirmPass || !updatedPass) {
-    return res.status(400).json({ msg: "Both password fields are required." });
+    return res.status(400).json({
+      message: "Both password fields are required.",
+      success: false,
+      error: true,
+    });
   }
   if (confirmPass !== updatedPass) {
-    return res.status(400).json({ msg: "Passwords do not match." });
+    return res.status(400).json({
+      message: "Passwords do not match.",
+      success: false,
+      error: true,
+    });
   }
 
   try {
-
     const newHashedPassword = await bcryptjs.hash(confirmPass, 10);
-
 
     const updateResult = await User.updateOne(
       { _id: id },
       { $set: { password: newHashedPassword } }
     );
 
-
     if (updateResult.matchedCount === 0) {
-      return res.status(404).json({ success: false, msg: "User not found." });
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
     }
 
     res.status(200).json({
       success: true,
-      msg: "Password updated successfully.",
+      message: "Password updated successfully.",
       data: updateResult,
     });
   } catch (error) {
     console.error("Error updating password:", error);
-    res.status(500).json({ msg: "An error occurred while updating the password." });
+    res.status(500).json({
+      message: "An error occurred while updating the password.",
+    });
   }
-}
-      // service to get all users
+};
+// service to get all users
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json({
+      message: "Get All Success ",
       success: true,
       data: users,
     });
@@ -254,4 +303,3 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
-

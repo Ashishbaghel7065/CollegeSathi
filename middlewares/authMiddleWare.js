@@ -10,7 +10,7 @@ const Auth = async (req, res, next) => {
 
   
     if (!header || !header.startsWith("Bearer ")) {
-      return res.status(401).json({ msg: "No token provided. Unauthorized." });
+      return res.status(401).json({ message: "No token provided. Unauthorized." });
     }
 
   
@@ -26,7 +26,7 @@ const Auth = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("Authentication error:", error);
-    return res.status(401).json({ msg: "Invalid or expired token." });
+    return res.status(401).json({ message: "Invalid or expired token." });
   }
 };
 
