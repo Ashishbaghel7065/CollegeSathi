@@ -63,6 +63,69 @@ export const createUser = async (req, res) => {
   }
 };
 
+// Userlogin
+export const userLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email or Password is Missing",
+        success: false,
+        error: true,
+      });
+    }
+
+    const existUser = await User.findOne({ email });
+
+    if (!existUser) {
+      return res.status(404).json({
+        message: "User is not found. Please Signup.",
+        success: false,
+        error: true,
+      });
+    }
+
+    const comparePassword = await bcryptjs.compare(
+      password,
+      existUser.password
+    );
+
+    if (!comparePassword) {
+      return res.status(401).json({
+        message: "Password is incorrect",
+        success: false,
+        error: true,
+      });
+    }
+
+    const payload = {
+      userId: existUser._id,
+      userEmail: existUser.email,
+    };
+
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {
+      expiresIn: "24h",
+    });
+
+    return res.status(200).json({
+      message: "User Login Successful",
+      success: true,
+      error: false,
+      token: token,
+    });
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      success: false,
+      error: true,
+    });
+  }
+};
+
+
+
 //updateFieldservice here
 export const updateUserService = async (req, res) => {
   try {
@@ -126,66 +189,7 @@ export const updateUserService = async (req, res) => {
   }
 };
 
-// Userlogin
-export const userLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Email or Password is Missing",
-        success: false,
-        error: true,
-      });
-    }
-
-    const existUser = await User.findOne({ email });
-
-    if (!existUser) {
-      return res.status(404).json({
-        message: "User is not found. Please Signup.",
-        success: false,
-        error: true,
-      });
-    }
-
-    const comparePassword = await bcryptjs.compare(
-      password,
-      existUser.password
-    );
-
-    if (!comparePassword) {
-      return res.status(401).json({
-        message: "Password is incorrect",
-        success: false,
-        error: true,
-      });
-    }
-
-    const payload = {
-      userId: existUser._id,
-      userEmail: existUser.email,
-    };
-
-    const token = jwt.sign(payload, process.env.SECRET_KEY, {
-      expiresIn: "24h",
-    });
-
-    return res.status(200).json({
-      message: "User Login Successful",
-      success: true,
-      error: false,
-      token: token,
-    });
-  } catch (error) {
-    console.error("Error during login:", error);
-    return res.status(500).json({
-      message: "Internal Server Error",
-      success: false,
-      error: true,
-    });
-  }
-};
 
 // Define the forgetPassword function
 export const forgetPassword = async (req, res) => {
@@ -240,6 +244,9 @@ export const forgetPassword = async (req, res) => {
   }
 };
 
+
+
+
 //updatePasswordservice here
 export const updatePasswordService = async (req, res) => {
   const { id } = req.params;
@@ -286,6 +293,10 @@ export const updatePasswordService = async (req, res) => {
     });
   }
 };
+
+
+
+
 // service to get all users
 export const getAllUsers = async (req, res) => {
   try {
