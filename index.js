@@ -6,6 +6,7 @@ import universityRouter from "./routes/universityRoute.js";
 import userRouter from './routes/userRoute.js'
 import filterRouter from './routes/filterRoute.js'
 
+import universtyAboutRouter from "./routes/universityAboutRoute.js"
 
 dotenv.config();
 const app = express();
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/api", universityRouter);
 app.use("/api",userRouter);
 app.use("/api",filterRouter)
+app.use("/api/",universtyAboutRouter)
 
 
 app.get("/", (req, res) => {
