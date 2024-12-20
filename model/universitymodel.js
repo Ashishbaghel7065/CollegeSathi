@@ -12,7 +12,7 @@ const universitySchema = mongoose.Schema(
       required: true,
     },
     rank: {
-      type: String,
+      type: Number,
       required: true,
     },
     image:{
@@ -25,11 +25,11 @@ const universitySchema = mongoose.Schema(
       required: true,
     },
     courses: {
-      type: String,
+      type: [String],
       required: true,
     },
     facilities: {
-      type: String,
+      type: [String],
       required: true,
     },
     alumni: {

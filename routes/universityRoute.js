@@ -8,9 +8,11 @@ import {
 import Auth from "../middlewares/authMiddleWare.js";
 import adminAuth from "../middlewares/adminAuth.js";
 
-const router = express.Router();
+
 import upload from "../utils/multer.js";
 
+
+const router = express.Router();
 router.post("/university/create",Auth,adminAuth, createAllUniversityController);
 
 router.patch("/university/update/:id",Auth,adminAuth, updateAllDataController);

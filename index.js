@@ -4,6 +4,8 @@ import ConnectDB from "./config/db.js";
 import cors from "cors";
 import universityRouter from "./routes/universityRoute.js";
 import userRouter from './routes/userRoute.js'
+import filterRouter from './routes/filterRoute.js'
+
 
 dotenv.config();
 const app = express();
@@ -19,6 +21,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/api", universityRouter);
 app.use("/api",userRouter);
+app.use("/api",filterRouter)
 
 
 app.get("/", (req, res) => {
