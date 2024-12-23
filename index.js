@@ -22,8 +22,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/api", universityRouter);
 app.use("/api",userRouter);
-app.use("/api",filterRouter)
-app.use("/api/",universtyAboutRouter)
+app.use("/api",filterRouter);
+app.use("/api",universtyAboutRouter);
 
 
 app.get("/", (req, res) => {

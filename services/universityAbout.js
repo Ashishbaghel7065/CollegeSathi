@@ -5,9 +5,10 @@ import About from "../model/universityAboutModel.js";
 //createUniversityAbout
 export async function handlerCreateNewUniversityAbout(req, res) {
   try {
-    const body = req.body;
-  
-
+    let body = req.body;
+    body.universityByAbout = req.query.universityId;
+    
+   console.log(body);
 
  
     const requiredFields = [
@@ -19,6 +20,7 @@ export async function handlerCreateNewUniversityAbout(req, res) {
       "examprocess",
       "placementpartner",
       "certification",
+      "universityByAbout",
     ];
 
     const missingFields = requiredFields.filter((field) => !body?.[field]);
@@ -57,7 +59,7 @@ export async function handlerCreateNewUniversityAbout(req, res) {
 
 export const getAllUniversityAbout = async (req, res) => {
   try {
-    const cards = await About.find({userId:req.body.userId}).populate('universityByAbout');
+    const cards = await About.find().populate('universityByAbout');
     res.status(200).json({
       message: "All About Get Success",
       success: true,

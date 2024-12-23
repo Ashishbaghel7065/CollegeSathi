@@ -36,7 +36,7 @@ const universityAboutSchema = new mongoose.Schema(
     },
     universityByAbout: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "University",
+      ref: "university",
     },
   },
   { timestamps: true }
