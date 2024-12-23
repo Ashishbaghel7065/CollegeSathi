@@ -1,4 +1,5 @@
 import University from "../model/universitymodel.js";
+import uploadOnCloudinary from "../utils/cloudinary.js";
 
 //getAllUniversity service
 export const getAllCards = async (req, res) => {
@@ -41,8 +42,7 @@ export async function handlerCreateNewUniversity(req, res) {
       !body.fees ||
       !body.courses ||
       !body.facilities ||
-      !body.alumni ||
-      !body.image
+      !body.alumni
     ) {
       return res.status(400).json({
         message:
@@ -51,6 +51,24 @@ export async function handlerCreateNewUniversity(req, res) {
         error: true,
       });
     }
+    const imageData=await uploadOnCloudinary(req.file.path, function (err, result) {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: false,
+          message: "error uploaded in cloudinary",
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        message: "uploaded",
+        data:result,
+      });
+  
+  
+    });
+
     const collegeResult = await University.create({
       title: body.title,
       location: body.location,
@@ -59,7 +77,7 @@ export async function handlerCreateNewUniversity(req, res) {
       courses: body.courses,
       facilities: body.facilities,
       alumni: body.alumni,
-      image: body.image,
+      image: imageData.secure_url,
     });
 
     return res.status(201).json({
@@ -92,7 +110,6 @@ export const updateAllCards = async (req, res) => {
       !courses ||
       !facilities ||
       !alumni ||
-      !image ||
       !location
     ) {
       return res.status(400).json({
@@ -101,10 +118,28 @@ export const updateAllCards = async (req, res) => {
         error: true,
       });
     }
+    const imageData=await uploadOnCloudinary(req.file.path, function (err, result) {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: false,
+          message: "error uploaded in cloudinary",
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        message: "uploaded",
+        data:result,
+      });
+  
+  
+    });
+
     const updatedCard = await University.findOneAndUpdate(
       { _id: id },
       {
-        image: image,
+        image: imageData.secure_url,
         fees: fees,
         title: title,
         location: location,
