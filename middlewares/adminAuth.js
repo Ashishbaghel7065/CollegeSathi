@@ -27,7 +27,6 @@ const adminAuth = async (req, res, next) => {
         // Allow access to the route if the user is Admin
         next();
     } catch (error) {
-        console.error("Error in adminAuth middleware:", error);
         return res.status(500).json({
             message: "Server Error",
             success: false,

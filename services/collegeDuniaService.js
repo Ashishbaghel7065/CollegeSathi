@@ -6,7 +6,7 @@ export const getAllCards = async (req, res) => {
   try {
     const cards = await University.find();
     res.status(200).json({
-      message: "All Card Get Success",
+      message: "All University Card Get Success",
       success: true,
       error: false,
       data: cards,
@@ -14,7 +14,7 @@ export const getAllCards = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch cards",
+      message: "Failed to fetch University cards",
       error: error.message,
     });
   }
@@ -26,12 +26,11 @@ export async function handlerCreateNewUniversity(req, res) {
     const titleCheck = University.findOne({ title: req.body.title }) !== null;
     if (!titleCheck) {
       return res.status(400).json({
-        message: "title already exists",
+        message: "University title already exists",
         success: false,
         error: true,
       });
     }
-    console.log(req.body);
     const body = req.body;
 
     if (
@@ -53,7 +52,6 @@ export async function handlerCreateNewUniversity(req, res) {
     }
     const imageData=await uploadOnCloudinary(req.file.path, function (err, result) {
       if (err) {
-        console.log(err);
         return res.status(500).json({
           success: false,
           message: "error uploaded in cloudinary",
@@ -62,7 +60,7 @@ export async function handlerCreateNewUniversity(req, res) {
   
       return res.status(200).json({
         success: true,
-        message: "uploaded",
+        message: "Image Uploaded Success",
         data:result,
       });
   
@@ -81,16 +79,14 @@ export async function handlerCreateNewUniversity(req, res) {
     });
 
     return res.status(201).json({
-      message: "Document created successfully",
+      message: "University Card created successfully",
       success: true,
       error: false,
       data: collegeResult,
     });
   } catch (error) {
-    console.error("Error creating document:", error);
-
     return res.status(500).json({
-      message: "An error occurred while creating the document",
+      message: "An error occurred while creating the University Card",
       error: error.message,
     });
   }
@@ -114,22 +110,21 @@ export const updateAllCards = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: "'id' parameter and 'fees' field are required.",
+        message: "Fields Are Missing",
         error: true,
       });
     }
     const imageData=await uploadOnCloudinary(req.file.path, function (err, result) {
       if (err) {
-        console.log(err);
         return res.status(500).json({
           success: false,
-          message: "error uploaded in cloudinary",
+          message: "Error uploaded in cloudinary",
         });
       }
   
       return res.status(200).json({
         success: true,
-        message: "uploaded",
+        message: "Image uploaded Success",
         data:result,
       });
   
@@ -154,22 +149,21 @@ export const updateAllCards = async (req, res) => {
     if (!updatedCard) {
       return res.status(404).json({
         success: false,
-        message: "University not found.",
+        message: "University Data not found.",
         error: true,
       });
     }
 
     res.status(200).json({
-      message: "Card Update Succefully",
+      message: "University Card Update Succefully",
       success: true,
       error: false,
       data: updatedCard,
     });
   } catch (error) {
-    console.error("Error updating university:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to update university.",
+      message: "Failed to update University Card.",
       error: error.message,
     });
   }
@@ -183,7 +177,7 @@ export const deleteDoc = async (req, res) => {
   const deletedDoc = await University.deleteOne({ _id: req.params.id });
 
     return res.status(200).json({ 
-      message: "deleteted successFully" + deletedDoc,
+      message: "University Card Deleteted SuccessFully" + deletedDoc,
       success:true,
       error:false
      });
