@@ -148,7 +148,7 @@ export const deleteDoc = async (req, res) => {
   const deletedDoc = await University.deleteOne({ _id: req.params.id });
 
     return res.status(200).json({ 
-      message: "deleteted successFully" + deletedDoc,
+      message: "deleteted successFully",
       success:true,
       error:false
      });

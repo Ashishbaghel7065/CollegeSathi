@@ -130,40 +130,19 @@ export const userLogin = async (req, res) => {
 export const updateUserService = async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      fullName,
-      phoneNumber,
-      gender,
-      email,
-      password,
-      dateofBirth,
-      role,
-    } = req.body;
+    const fieldsToUpdate= req.body;
     if (
-      !fullName ||
-      !phoneNumber ||
-      !gender ||
-      !email ||
-      !password ||
-      !dateofBirth ||
-      !role
+     fieldsToUpdate
     ) {
       return res.status(400).json({
         success: false,
         message: "'id' parameter and 'fees' field are required.",
       });
     }
-    const updatedUser = await User.findOneAndUpdate(
+    // const hashpassword = await bcryptjs.hash(body.password, 10);
+    const updatedUser = await User.updateOne(
       { _id: id },
-      {
-        fullName: fullName,
-        phoneNumber: phoneNumber,
-        gender: gender,
-        email: email,
-        password: password,
-        dateofBirth: dateofBirth,
-        role: role,
-      },
+      { $set: updateFields },
       { new: true }
     );
 

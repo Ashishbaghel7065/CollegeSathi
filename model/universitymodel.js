@@ -33,7 +33,7 @@ const universitySchema = mongoose.Schema(
       required: true,
     },
     alumni: {
-      type: String,
+      type: [String],
       required: true,
     },
   },
