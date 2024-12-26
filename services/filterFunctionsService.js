@@ -13,7 +13,6 @@ export const filterByFieldsService = async (req, res) => {
     return { ...acc, ...condition };
   }, {});
 
-  console.log("Combined Filter Criteria:", combinedFilter);
 
   try {
     const filteredArr = await University.aggregate([
@@ -24,7 +23,6 @@ export const filterByFieldsService = async (req, res) => {
       .status(200)
       .json({ message: "Here's the filtered array", data: filteredArr });
   } catch (error) {
-    console.error(error);
     return res
       .status(500)
       .json({ message: "Something went wrong while filtering", error });

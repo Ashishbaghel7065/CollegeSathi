@@ -15,14 +15,6 @@ const router = express.Router();
 router.post("/resgiter", createUserController);
 router.post("/login", UserloginCotroller);
 router.patch("/updateuser/:id", Auth, updateUserController);
-
-router.get("/dashborad", Auth, adminAuth, (req, res) => {
-  res.send({
-    msg: "Admin Routes Accesable",
-    succes: true,
-    error: false,
-  });
-});
 router.get("/forget-password", forgetPasswordController);
 router.patch("/updatePassword/:id", updatePasswordController);
 router.get("/getusers", Auth, adminAuth, getAllUserController);

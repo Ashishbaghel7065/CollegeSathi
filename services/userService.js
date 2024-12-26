@@ -10,12 +10,11 @@ export const createUser = async (req, res) => {
     const emailCheck = User.findOne({ email: req.body.email }) !== null;
     if (!emailCheck) {
       return res.status(400).json({
-        message: "user already exists",
+        message: "User Already Exists",
         success: false,
         error: true,
       });
     }
-    console.log(req.body);
     const body = req.body;
 
     if (
@@ -29,7 +28,7 @@ export const createUser = async (req, res) => {
       !body.gender
     ) {
       return res.status(400).json({
-        message: "some of the fields are still empty",
+        message: "Some of the fields are still empty",
         success: false,
         error: true,
       });
@@ -48,16 +47,15 @@ export const createUser = async (req, res) => {
     });
 
     return res.status(201).json({
-      message: "Document created successfully",
+      message: "User created successfully",
       success: true,
       error: false,
       data: userResult,
     });
   } catch (error) {
-    console.error("Error creating document:", error);
 
     return res.status(500).json({
-      message: "An error occurred while creating the document",
+      message: "An error occurred while creating the User",
       error: error.message,
     });
   }
@@ -93,7 +91,7 @@ export const userLogin = async (req, res) => {
 
     if (!comparePassword) {
       return res.status(401).json({
-        message: "Password is incorrect",
+        message: "Password is Incorrect",
         success: false,
         error: true,
       });
@@ -115,7 +113,6 @@ export const userLogin = async (req, res) => {
       token: token,
     });
   } catch (error) {
-    console.error("Error during login:", error);
     return res.status(500).json({
       message: "Internal Server Error",
       success: false,
@@ -136,7 +133,7 @@ export const updateUserService = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: "'id' parameter and 'fees' field are required.",
+        message: "Fields Are Missing",
       });
     }
     // const hashpassword = await bcryptjs.hash(body.password, 10);
@@ -159,10 +156,9 @@ export const updateUserService = async (req, res) => {
       data: updatedUser,
     });
   } catch (error) {
-    console.error("Error updating user:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to update user.",
+      message: "Failed to update User.",
       error: error.message,
     });
   }
@@ -193,7 +189,7 @@ export const forgetPassword = async (req, res) => {
         error: true,
       });
     }
-    const link = "http://localhost:5173/forget-password";
+    const link = process.env.FORGET_PASSWORD_LINK ;
     // Email content
     const subject = "Forget Password";
     const htmlContent = emailTemplate(userEmail.fullName, link, userEmail._id);
@@ -206,15 +202,13 @@ export const forgetPassword = async (req, res) => {
       html: htmlContent,
       text: textContent,
     });
-
-    console.log("Password reset email sent successfully.");
     return res.status(200).json({
       message: "Password reset email sent successfully.",
       success: true,
       error: false,
     });
   } catch (error) {
-    console.error("Error sending password reset email:", error.message);
+
     return res.status(500).json({
       message: "Internal server error. Please try again later.",
       success: false,
@@ -266,7 +260,6 @@ export const updatePasswordService = async (req, res) => {
       data: updateResult,
     });
   } catch (error) {
-    console.error("Error updating password:", error);
     res.status(500).json({
       message: "An error occurred while updating the password.",
     });
@@ -281,7 +274,7 @@ export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json({
-      message: "Get All Success ",
+      message: "Get All User Success",
       success: true,
       data: users,
     });
