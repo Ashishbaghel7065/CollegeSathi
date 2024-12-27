@@ -136,7 +136,11 @@ export const updateUserService = async (req, res) => {
         message: "Fields Are Missing",
       });
     }
-    // const hashpassword = await bcryptjs.hash(body.password, 10);
+    if(Object.keys(fieldsToUpdate).includes("password")){
+      const hashpassword = await bcryptjs.hash(body.password, 10);
+      fieldsToUpdate.password = hashpassword;
+    }
+    
     const updatedUser = await User.updateOne(
       { _id: id },
       { $set: updateFields },
