@@ -137,7 +137,7 @@ export const updateUserService = async (req, res) => {
       });
     }
     if(Object.keys(fieldsToUpdate).includes("password")){
-      const hashpassword = await bcryptjs.hash(body.password, 10);
+      const hashpassword = await bcryptjs.hash(fieldsToUpdate.password, 10);
       fieldsToUpdate.password = hashpassword;
     }
     
